@@ -1,0 +1,23 @@
+{
+  "name": "asq-rating",
+  "version": "0.0.0",
+  "homepage": "https://github.com/ASQ-USI/asq-rating",
+  "authors": [
+    "Vasileios Triglianos <triglian@gmail.com>",
+    "Zhenfei Nie <zhenfei.nie@gmail.com>"
+  ],
+  "description": "ASQ rating question element",
+  "keywords": [
+    "ASQ"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5.1",
+    "asq-base": "ASQ-USI/asq-base#master",
+    "asq-option": "ASQ-USI/asq-option#master",
+    "test-fixture": "Polymer/test-fixture#~0.2.0"
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#~2.2.6"
+  }
+}

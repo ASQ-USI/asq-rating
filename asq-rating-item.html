@@ -1,0 +1,111 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../asq-base/asq-base.html">
+<link rel="import" href="./asq-stars.html">
+
+
+
+<!--
+`asq-rating-item` defines an item for `asq-rating` elements. Internally it uses other elements depending on the rating `type`. Right now, only `<asq-stars>` is supported
+
+##### Example
+    <asq-rating-item>Answer 1</asq-rating-item>
+
+@element asq-rating-item
+@group ASQ Elements
+@blurb Element defining items to rate. Internally it uses other elements depending on the rating `type`. Right now, only `<asq-stars>` is supported
+-->
+<polymer-element name="asq-rating-item" attributes="type name">
+  <template>
+    <style>
+    :host{
+      display:block;
+    }
+      #progressBar{
+        display: block;
+        width: 100%;
+      }
+
+    </style>
+
+    <!-- template for viewer -->
+    <template if="{{role==roles.VIEWER}}">
+      <div layout horizontal>
+        <div id="content"><content></content></div>
+        <template  if="{{type=='stars'}}">
+          <asq-stars name="{{name}}"></asq-stars>
+        </template> 
+      </div>
+    </template>
+    
+
+    <!-- template for presenter -->
+    <template  if="{{role==roles.PRESENTER}}">
+      <div layout horizontal>
+        <div id="content"><content></content></div>
+        <template  if="{{type=='stars'}}">
+          <asq-stars name="{{name}}"></asq-stars>
+        </template> 
+      </div>
+    </template> 
+    
+    <!-- template for teaching assistants -->
+    <template  if="{{role==roles.TA}}">
+      <div layout horizontal>
+        <div id="content"><content></content></div>
+      </div>
+    </template>    
+
+  </template>
+  <script>
+    (function() {
+
+      var p = {
+        publish: {
+          /**
+           * The type of the rating item. 
+           * @attribute type
+           * @type string
+           * @default 'stars'
+           */
+          type: {value: "stars", reflect: true},
+
+          /**
+           * This attribute identifies the rating item. For rating items that use `input type="radio"`, like `<asq-stars>`, it is needed to group the radio buttons.
+           * @attribute name
+           * @type string
+           * @default ''
+           */
+          name: {value: '', reflect: true},
+
+          /**
+           * This attribute denotes the a option is disabled or endabled.
+           * @attribute disabled
+           * @type boolean
+           * @default false
+           */
+          disabled: {value: false, reflect: true}
+
+        },
+
+        /**
+         * The `submit` method will submit the answer to a wrapped 'asq-exercise' instance.
+         * Only useful when the `role` is `viewer`.
+         * 
+         * @method submit
+         */
+        submit: function() {
+          if ( this.role === this.roles.VIEWER ) {
+            if(this.type=="stars"){
+              return this.shadowRoot.querySelector("asq-stars").rating;
+            }
+          }
+        },
+       
+      }
+
+      ASQ.asqify(p);
+      Polymer('asq-rating-item', p);
+    })()
+    
+  </script>
+</polymer-element>

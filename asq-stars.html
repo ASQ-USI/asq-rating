@@ -1,0 +1,125 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../asq-base/asq-base.html">
+<!--
+`asq-stars` is used inside the `asq-exercise`, representing the confidence level of the students.
+
+##### Example
+    <asq-stars name="my-stars"></asq-stars>
+
+
+@element asq-stars
+@group ASQ Elements
+-->
+<style>
+@font-face {
+  font-family: 'fontello';
+  src: url('./font/fontello.eot');
+  src: url('./font/fontello.eot') format('embedded-opentype'),
+       url('./font/fontello.woff') format('woff'),
+       url('./font/fontello.ttf') format('truetype'),
+       url('./font/fontello.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+</style>
+<polymer-element name="asq-stars" attributes="name">
+  <template>
+    <link rel="stylesheet" href="./asq-stars.css" type="text/css" />
+    
+    <fieldset id="rating" on-tap="{{onTap}}">
+      <input type="radio" id="star5" name="rating" value="5" /><label class = "full" for="star5" title="Excellend - 5 stars"></label>
+      <input type="radio" id="star4half" name="rating" value="4.5" /><label class="half" for="star4half" title="Very good - 4.5 stars"></label>
+      <input type="radio" id="star4" name="rating" value="4" /><label class = "full" for="star4" title="Very good - 4 stars"></label>
+      <input type="radio" id="star3half" name="rating" value="3.5" /><label class="half" for="star3half" title="Good - 3.5 stars"></label>
+      <input type="radio" id="star3" name="rating" value="3" /><label class = "full" for="star3" title="Fine - 3 stars"></label>
+      <input type="radio" id="star2half" name="rating" value="2.5" /><label class="half" for="star2half" title="Poor - 2.5 stars"></label>
+      <input type="radio" id="star2" name="rating" value="2" /><label class = "full" for="star2" title="Poor - 2 stars"></label>
+      <input type="radio" id="star1half" name="rating" value="1.5" /><label class="half" for="star1half" title="Very poor - 1.5 stars"></label>
+      <input type="radio" id="star1" name="rating" value="1" /><label class = "full" for="star1" title="Very poor - 1 star"></label>
+      <input type="radio" id="starhalf" name="rating" value="half" /><label class="half" for="starhalf" title="terrible - 0.5 stars"></label>
+    </fieldset>
+  </template>
+
+  <script>
+    (function() {
+
+      var p = {
+
+        publish: {
+          /**
+           * `name` attribute used by each `input type="radio"` that represents a star. It is needed to group them.
+           * @attribute name
+           * @type string
+           * @default ''
+           */
+          name: {value: '', reflect: true},
+
+          /**
+           * This attribute identifies the rating item. For rating items that use `input type="radio"`, like `<asq-stars>`, it is needed to group the radio buttons.
+           * @attribute rating
+           * @type number
+           * @default 0
+           */
+          rating: {value: 0, reflect: true},
+        },
+
+        ratingChanged: function(oldRating, newRating){
+          if (! parseFloat(newRating)){
+            this.rating = oldRating;
+            return;
+          }
+
+          this.setStarsFromRating(this.rating);
+        },
+
+        onTap: function(sender, event, detail){
+          this.rating = this.getRatingFromStars();
+        },
+
+        /**
+         * Returns the sum of all `:checked` stars (0.5 for each star).
+         * 
+         * @method getRatingFromStars
+         * @return {number} The sum of all :checked stars (0.5 for each star).
+         */
+        getRatingFromStars: function () {
+          var stars = this.$.rating.querySelectorAll("input[type=radio]");
+          for (var i=0; i<stars.length; i++) {
+            var star = stars[i];
+            if ( star.checked == true ) {
+              return parseFloat(star.value);
+            }
+          }
+          return 0;      
+        },
+
+        /**
+         * Sets `number` :checked stars (with half a star interval
+         * 
+         * @method setStarsFromRating
+         * @param {number} rating How many stars to set
+         * 
+         */
+        setStarsFromRating: function(rating) {
+          var stars = this.$.rating.querySelectorAll("input[type=radio]").array().reverse();
+
+          for ( var i=0; i<stars.length; i++ ) {
+            stars[i].checked = false;
+          }
+
+          //we have halfs so duplicate
+          rating = Math.floor(2 * rating)
+          rating = rating > stars.length 
+            ? stars.length 
+            : rating;
+          for ( var i=0; i<rating; i++ ) {
+            stars[i].checked = true;
+          }
+        }
+      }
+
+      ASQ.asqify(p);
+      Polymer('asq-stars', p);
+    })();
+  </script>
+</polymer-element>

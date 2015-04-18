@@ -1,0 +1,34 @@
+{
+  "name": "asq-rating",
+  "version": "0.0.0",
+  "description": "Rating question type for ASQ.",
+  "author": "Vassilis Triglianos <triglian@gmail.com>",
+  "homepage": "https://github.com/ASQ-USI/asq-rating",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ASQ-USI/asq-rating.git"
+  },
+  "keywords": [
+    "node.js"
+  ],
+  "bugs": {
+    "url": "https://github.com/ASQ-USI/asq-rating/issues"
+  },
+  "dependencies": {
+    "asq-plugin": "ASQ-USI/asq-plugin",
+    "bluebird": "^2.8.2",
+    "cheerio": "^0.18.0",
+    "lodash": "^3.7.0",
+    "mongoose": "^3.8.21"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "mocha": "^2.1.0",
+    "sinon": "^1.12.2"
+  }
+}

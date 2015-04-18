@@ -1,0 +1,166 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../asq-base/asq-base.html">
+<link rel="import" href="./asq-rating-item.html">
+
+<!--
+`asq-rating` is a rating question type used in ASQ. Rating items should be `asq-rating-item` elements.
+
+##### Example
+    <asq-rating type="stars">
+      <asq-stem><h3>An asq-rating question.</h3></asq-stem>
+      <asq-rating-item>Item to rate #1</asq-rating-item>
+      <asq-rating-item>Item to rate #2</asq-rating-item>
+      <asq-rating-item>Item to rate #3</asq-rating-item>
+      <asq-rating-item>Item to rate #4</asq-rating-item>
+    </asq-rating>
+
+@element asq-rating
+@group ASQ Elements
+@blurb `asq-rating` is a rating question type used in ASQ. Rating items should be `asq-rating-item` elements.
+@homepage http://github.com/ASQ_USI/asq-rating
+-->
+<polymer-element name="asq-rating" attributes="type">
+  <template>
+    <style>
+      :host{
+        display: block;
+      }
+    </style>
+
+    <!-- (for now) Keep same when either viewer or presenter -->
+    <content select="asq-stem"></content>
+    <content select="asq-rating-item"></content>
+  </template>
+
+  <script>
+  (function() {
+    var p = {
+
+      /**
+       * This attribute indicates whether the `type` passed to the asq-rating-items. If an asq-rating-item has it's type set to a value blah blah
+       *
+       * @attribute type
+       * @type string
+       * @default "stars"
+       */
+
+      type: "stars",
+
+      ready: function(){
+
+        //initialize type of rating items
+        var ari = this.querySelectorAll('asq-rating-item');
+        ari.array().forEach(function(item){
+            if(item.type == '' || item.type == undefined || item.type == null){
+              item.type = this.type;
+            }
+        }.bind(this));
+
+        role = this.roles.VIEWER;
+      },
+
+      created: function(){
+        document.addEventListener('asq-ready', function(evt){
+          try{
+            this.subscribeToEvents(evt.detail.asqEventBus)
+          }catch(err){
+            console.debug('failed to subscribeToEvents');
+          }
+        }.bind(this));
+      },
+
+      onQuestionType: function(evt){
+        if(evt && evt.questionType && evt.questionType == 'asq-rating'){
+          if(evt.type == "progress"){
+            this.onProgress(evt)
+          }
+        }
+      },
+
+      onProgress: function(evt){
+        if(evt.questionUid !== this.uid) return;
+        if(this.role !== this.roles.PRESENTER) return;
+        this.updateProgress(evt.options, evt.total)
+      },
+
+      updateProgress: function(options, total){
+        total = total | 100;
+        for (var key in options){
+          if(options.hasOwnProperty(key)){
+            this.updateOptionProgress(key, options[key], total);
+          }
+        }
+      },
+
+      updateOptionProgress: function(uid, val, total){
+        var option = document.querySelector('asq-option[uid="'+ uid +'"]');
+        if(! option){
+          console.log('failed to updateOptionProgress, could not find option with uid %s', uid);
+          return;
+        }
+        var progressBar = option.shadowRoot.getElementById('progressBar');
+        progressBar.max = parseInt(total);
+        progressBar.value = parseInt(val);
+      },
+
+      onQuestionTypeEdit: function(evt){
+        if(evt && evt.questionType && evt.questionType == 'asq-rating'){
+          if(evt.type == "progress_edit"){
+            console.log("ON SUBMISSION EDITTING BACK", evt);
+            this.onProgress(evt);
+          }
+        }
+      },
+
+      /**
+       * This question type is interested in two events: `asq:question_type`, which is emitted 
+       * when answer is submitted successfully, and `asq:question_type_edit`, which is emitted
+       * when editing answer.
+       *
+       */
+      subscribeToEvents: function(eventBus){
+        eventBus.on('asq:question_type', this.onQuestionType.bind(this));
+        eventBus.on('asq:question_type_edit', this.onQuestionTypeEdit.bind(this));
+      },
+
+      /**
+       * The `submit` method returns an object that respresents the submission of this question. The object has the following structure:
+
+           {
+              questionUid: this.uid, 
+              timestamp: new Date(),
+              submission: [] // Array of the result of submit() called for each <asq-rating-item> of the question
+           }
+       * Only useful when the `role` of the element is <b>viewer</b>.
+       *
+       * @method submit
+       */
+      submit: function() {
+        if ( this.role !== this.roles.VIEWER ) {
+          return;
+        }
+
+        var items = this.childNodes.array().filter(function(el) {
+          return el.isASQElement && el.nodeName == "ASQ-RATING-ITEM";
+        });
+
+        var submission = [];
+        items.forEach(function(item, index) {
+          submission.push(item.submit());
+        });   
+
+        return {
+          questionUid: this.uid,
+          timestamp: new Date(),
+          submission: submission
+        };
+      }
+
+    }
+
+    ASQ.asqify(p, true);
+    Polymer('asq-rating', p);
+
+  })();
+  </script>
+</polymer-element>
