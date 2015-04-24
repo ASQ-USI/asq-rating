@@ -8,10 +8,10 @@
 ##### Example
     <asq-rating type="stars">
       <asq-stem><h3>An asq-rating question.</h3></asq-stem>
-      <asq-rating-item>Item to rate #1</asq-rating-item>
-      <asq-rating-item>Item to rate #2</asq-rating-item>
-      <asq-rating-item>Item to rate #3</asq-rating-item>
-      <asq-rating-item>Item to rate #4</asq-rating-item>
+      <asq-rating-item name="item-1">Item to rate #1</asq-rating-item>
+      <asq-rating-item name="item-2">Item to rate #2</asq-rating-item>
+      <asq-rating-item name="item-3">Item to rate #3</asq-rating-item>
+      <asq-rating-item name="item-4">Item to rate #4</asq-rating-item>
     </asq-rating>
 
 @element asq-rating
@@ -80,27 +80,25 @@
       onProgress: function(evt){
         if(evt.questionUid !== this.uid) return;
         if(this.role !== this.roles.PRESENTER) return;
-        this.updateProgress(evt.options, evt.total)
+        this.updateProgress(evt.ratings, evt.total)
       },
 
-      updateProgress: function(options, total){
+      updateProgress: function(ratings, total){
         total = total | 100;
-        for (var key in options){
-          if(options.hasOwnProperty(key)){
-            this.updateOptionProgress(key, options[key], total);
+        for (var key in ratings){
+          if(ratings.hasOwnProperty(key)){
+            this.updateRatingProgress(key, ratings[key], total);
           }
         }
       },
 
-      updateOptionProgress: function(uid, val, total){
-        var option = document.querySelector('asq-option[uid="'+ uid +'"]');
-        if(! option){
-          console.log('failed to updateOptionProgress, could not find option with uid %s', uid);
+      updateRatingProgress: function(uid, val, total){
+        var ratingItem = document.querySelector('asq-rating-item[uid="'+ uid +'"]');
+        if(! ratingItem){
+          console.log('failed to updateRatingItemProgress, could not find rating item with uid %s', uid);
           return;
         }
-        var progressBar = option.shadowRoot.getElementById('progressBar');
-        progressBar.max = parseInt(total);
-        progressBar.value = parseInt(val);
+        ratingItem.rating = val;
       },
 
       onQuestionTypeEdit: function(evt){
@@ -113,14 +111,12 @@
       },
 
       /**
-       * This question type is interested in two events: `asq:question_type`, which is emitted 
-       * when answer is submitted successfully, and `asq:question_type_edit`, which is emitted
-       * when editing answer.
+       * This question type is interested in  `asq:question_type`, which is emitted 
+       * when answer is submitted successfully.
        *
        */
       subscribeToEvents: function(eventBus){
         eventBus.on('asq:question_type', this.onQuestionType.bind(this));
-        eventBus.on('asq:question_type_edit', this.onQuestionTypeEdit.bind(this));
       },
 
       /**

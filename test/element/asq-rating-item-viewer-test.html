@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="asq" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <title>sq-rating-item viewer test</title>
+  <title>asq-rating-item viewer test</title>
 
   <script src="../../../webcomponentsjs/webcomponents.min.js"></script>
   <link rel="import" href="../../../test-fixture/test-fixture.html">
@@ -64,7 +64,10 @@
         describe('submit', function(){
 
           it('should return properly formatted data', function() {
-            assert.equal(myEl.submit(), 0)
+            assert.deepEqual(myEl.submit(), {
+              uid: 'my-uid',
+              rating: 0
+            })
           });
         });
       });

@@ -14,7 +14,6 @@
   "dependencies": {
     "polymer": "Polymer/polymer#^0.5.1",
     "asq-base": "ASQ-USI/asq-base#master",
-    "asq-option": "ASQ-USI/asq-option#master",
     "test-fixture": "Polymer/test-fixture#~0.2.0"
   },
   "devDependencies": {
