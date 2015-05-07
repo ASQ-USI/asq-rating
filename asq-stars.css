@@ -27,17 +27,20 @@ h1 { font-size: 1.5em; margin: 10px; }
 }
 
 #rating > label { 
-  color: #ddd; 
+color: #DDD; 
  float: right; 
 }
 
 /***** CSS Magic to Highlight Stars on Hover *****/
 
-#rating > input:checked ~ label, /* show gold star when clicked */
-#rating:not(:checked) > label:hover, /* hover current star */
-#rating:not(:checked) > label:hover ~ label { color: #FFD700;  } /* hover previous stars in list */
 
-#rating > input:checked + label:hover, /* hover current star when changing rating */
-#rating > input:checked ~ label:hover,
-#rating > label:hover ~ input:checked ~ label, /* lighten current selection */
-#rating > input:checked ~ label:hover ~ label { color: #FFED85;  } 
+#rating > input:checked ~ label, /* show gold star when clicked */
+/* The negation pseudo-class is used to hide the rule from older browsers 
+which don’t support some of the techniques required */
+#rating:not(old) > input:not([disabled]) + label:hover, /* hover current star */
+#rating:not(old) > input:not([disabled]) + label:hover ~ label { color: #FFD700;  } /* hover previous stars in list */
+
+#rating > input:checked:not([disabled]) + label:hover, /* hover current star when changing rating */
+#rating > input:checked:not([disabled]) ~ label:hover,
+#rating > label:hover ~ input:checked:not([disabled]) ~ label, /* lighten current selection */
+#rating > input:checked:not([disabled]) ~ label:hover ~ label { color: #FFED85;  } 

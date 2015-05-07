@@ -14,7 +14,7 @@
 @group ASQ Elements
 @blurb Element defining items to rate. Internally it uses other elements depending on the rating `type`. Right now, only `<asq-stars>` is supported
 -->
-<polymer-element name="asq-rating-item" attributes="type name rating">
+<polymer-element name="asq-rating-item" attributes="type name rating disabled">
   <template>
     <style>
     :host{
@@ -31,7 +31,7 @@
       <div id="container" layout horizontal>
         <div id="content"><content></content></div>
         <template  if="{{type=='stars'}}">
-          <asq-stars name="{{name}}" rating="{{rating}}"></asq-stars> <div> {{rating}}</div>
+          <asq-stars name="{{name}}" rating="{{rating}}" disabled?="{{disabled}}"></asq-stars> <div> {{rating}}</div>
         </template> 
       </div>
     </template>
@@ -42,7 +42,7 @@
       <div id="container" layout horizontal>
         <div id="content"><content></content></div>
         <template  if="{{type=='stars'}}">
-          <asq-stars name="{{name}}" rating="{{rating}}"></asq-stars> <div> {{rating}}</div>
+          <asq-stars name="{{name}}" rating="{{rating}}" disabled?="{{disabled}}"></asq-stars> <div> {{rating}}</div>
         </template> 
       </div>
     </template> 
@@ -85,7 +85,7 @@
           rating: {value: 0, reflect: true},
 
           /**
-           * This attribute denotes the a option is disabled or endabled.
+           * If true, the user cannot interact with this element.
            * @attribute disabled
            * @type boolean
            * @default false
