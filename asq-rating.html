@@ -70,11 +70,40 @@
       },
 
       onQuestionType: function(evt){
-        if(evt && evt.questionType && evt.questionType == 'asq-rating'){
+        if(!evt || ! evt.questionType) return;
+
+        if(evt.questionType == 'asq-rating'){
           if(evt.type == "progress"){
-            this.onProgress(evt)
+            this.onProgress(evt);
+          }else if(evt.type == "restorePresenter"){
+            this.onRestorePresenter(evt);
+          }
+          else if(evt.type == "restoreViewer"){
+            this.onRestoreViewer(evt);
           }
         }
+      },
+
+      onRestorePresenter: function(evt){
+        evt.questions.forEach(function(q){
+         if(q._id != this.uid) return;
+          q.data.ratingItems.forEach(function(rItem){
+            if(rItem.rating >= 0){
+              this.updateRatingProgress(rItem._id, rItem.rating);
+            }
+          }.bind(this));
+        }.bind(this));
+      },
+
+      onRestoreViewer: function(evt){
+        evt.questions.forEach(function(q){
+         if(q._id != this.uid) return;
+          q.ratingItems.forEach(function(rItem){
+            if(rItem.rating >= 0){              
+              this.updateRatingProgress(rItem._id, rItem.rating);
+            }
+          }.bind(this));
+        }.bind(this));
       },
 
       onProgress: function(evt){
@@ -83,17 +112,16 @@
         this.updateProgress(evt.ratings, evt.total)
       },
 
-      updateProgress: function(ratings, total){
-        total = total | 100;
+      updateProgress: function(ratings){
         for (var key in ratings){
           if(ratings.hasOwnProperty(key)){
-            this.updateRatingProgress(key, ratings[key], total);
+            this.updateRatingProgress(key, ratings[key]);
           }
         }
       },
 
-      updateRatingProgress: function(uid, val, total){
-        var ratingItem = document.querySelector('asq-rating-item[uid="'+ uid +'"]');
+      updateRatingProgress: function(uid, val){
+        var ratingItem = this.querySelector('asq-rating-item[uid="'+ uid +'"]');
         if(! ratingItem){
           console.log('failed to updateRatingItemProgress, could not find rating item with uid %s', uid);
           return;
