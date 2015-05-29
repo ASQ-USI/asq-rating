@@ -74,11 +74,13 @@
 
         if(evt.questionType == 'asq-rating'){
           if(evt.type == "progress"){
-            this.onProgress(evt);
+            this.onProgress(evt.question);
           }else if(evt.type == "restorePresenter"){
+            if(this.role !== this.roles.PRESENTER) return;
             this.onRestorePresenter(evt);
           }
           else if(evt.type == "restoreViewer"){
+            if(this.role !== this.roles.VIEWER) return;
             this.onRestoreViewer(evt);
           }
         }
@@ -86,7 +88,7 @@
 
       onRestorePresenter: function(evt){
         evt.questions.forEach(function(q){
-         if(q._id != this.uid) return;
+         if(q.uid != this.uid) return;
           q.data.ratingItems.forEach(function(rItem){
             if(rItem.rating >= 0){
               this.updateRatingProgress(rItem._id, rItem.rating);
@@ -97,7 +99,7 @@
 
       onRestoreViewer: function(evt){
         evt.questions.forEach(function(q){
-         if(q._id != this.uid) return;
+         if(q.uid != this.uid) return;
           q.ratingItems.forEach(function(rItem){
             if(rItem.rating >= 0){              
               this.updateRatingProgress(rItem._id, rItem.rating);
@@ -106,10 +108,10 @@
         }.bind(this));
       },
 
-      onProgress: function(evt){
-        if(evt.questionUid !== this.uid) return;
+      onProgress: function(question){
+        if(question.uid !== this.uid) return;
         if(this.role !== this.roles.PRESENTER) return;
-        this.updateProgress(evt.ratings, evt.total)
+        this.updateProgress(question.ratings, question.total)
       },
 
       updateProgress: function(ratings){
@@ -127,15 +129,6 @@
           return;
         }
         ratingItem.rating = val;
-      },
-
-      onQuestionTypeEdit: function(evt){
-        if(evt && evt.questionType && evt.questionType == 'asq-rating'){
-          if(evt.type == "progress_edit"){
-            console.log("ON SUBMISSION EDITTING BACK", evt);
-            this.onProgress(evt);
-          }
-        }
       },
 
       /**
