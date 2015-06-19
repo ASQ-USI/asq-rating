@@ -31,7 +31,7 @@
       <div id="container" layout horizontal>
         <div id="content"><content></content></div>
         <template  if="{{type=='stars'}}">
-          <asq-stars name="{{name}}" rating="{{rating}}" disabled?="{{disabled}}"></asq-stars> <div> {{rating}}</div>
+          <asq-stars name="{{name}}" rating="{{rating}}" disabled?="{{disabled}}"></asq-stars> <div> {{truncatedRating}}</div>
         </template> 
       </div>
     </template>
@@ -42,7 +42,7 @@
       <div id="container" layout horizontal>
         <div id="content"><content></content></div>
         <template  if="{{type=='stars'}}">
-          <asq-stars name="{{name}}" rating="{{rating}}" disabled?="{{disabled}}"></asq-stars> <div> {{rating}}</div>
+          <asq-stars name="{{name}}" rating="{{rating}}" disabled?="{{disabled}}"></asq-stars> <div> {{truncatedRating}}</div>
         </template> 
       </div>
     </template> 
@@ -57,6 +57,15 @@
   </template>
   <script>
     (function() {
+
+      // function roundToTwoDecimals(val){
+      //   // round to 2 decimals
+      //   // Note the plus sign that drops any "extra" zeroes at the end.
+      //   // It changes the result (which is a string) into a number again (think "0 + foo"),
+      //   // which means that it uses only as many digits as necessary.
+      //   //from http://stackoverflow.com/questions/11832914/round-to-at-most-2-decimal-places-in-javascript
+      //   return  +val.toFixed(2);
+      // }
 
       var p = {
         publish: {
@@ -92,6 +101,10 @@
            */
           disabled: {value: false, reflect: true}
 
+        },
+
+        ratingChanged: function(newRating, oldRating) {
+          this.truncatedRating = +oldRating.toFixed(2);
         },
 
         /**
